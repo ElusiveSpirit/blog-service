@@ -8,6 +8,7 @@ from functools import wraps
 from subprocess import call
 
 import click
+import uvloop
 from aiohttp_devtools.cli import host_help, debugtoolbar_help, app_factory_help, port_help, aux_port_help, verbose_help
 from aiohttp_devtools.exceptions import AiohttpDevException
 from aiohttp_devtools.logs import setup_logging, main_logger
@@ -23,6 +24,8 @@ _dir_existing = click.Path(exists=True, dir_okay=True, file_okay=False)
 _file_dir_existing = click.Path(exists=True, dir_okay=True, file_okay=True)
 _dir_may_exist = click.Path(dir_okay=True, file_okay=False, writable=True, resolve_path=True)
 
+uvloop.install()
+
 
 def setup():
     """
@@ -36,7 +39,7 @@ def setup():
     try:
         asyncio.run(create_db_pool())
     except InvalidCatalogNameError:
-        logger.warning(f'⚠️  Database {settings.DATABASE_NAME} doesn\'t exists')
+        logger.warning(f'⚠️  Database {settings.POSTGRES_DB} doesn\'t exists')
 
 
 def setup_app_env(func):
@@ -86,8 +89,8 @@ def runserver(**config):
 @click.argument('collection')
 def clear_database(collection):
     click.echo(f'Dropping collection {collection}...')
-    asyncio.run(drop_database(settings.DATABASE_NAME))
-    asyncio.run(create_database(settings.DATABASE_NAME))
+    asyncio.run(drop_database(settings.POSTGRES_DB))
+    asyncio.run(create_database(settings.POSTGRES_DB))
 
 
 @cli.command()
@@ -97,7 +100,7 @@ def clear_database(collection):
 def test(ctx, settings_module, **config):
     os.environ.setdefault('AIOHTTP_SETTINGS_MODULE', settings_module)
     if settings.DATABASE_CLEAR:
-        ctx.invoke(clear_database, collection=settings.DATABASE_NAME)
+        ctx.invoke(clear_database, collection=settings.POSTGRES_DB)
     setup()
     call(['py.test'])
 

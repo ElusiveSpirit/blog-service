@@ -1,3 +1,4 @@
+import os
 
 # CORE
 ####################
@@ -8,9 +9,9 @@ SECRET_KEY = 'kj3h12iu3yhl12ih3;o'
 
 # DATABASE
 ####################
-DATABASE_HOST = 'localhost'
-DATABASE_USER = 'postgres'
-DATABASE_PASSWORD = 'postgres'
-DATABASE_NAME = 'aiohttp'
+POSTGRES_HOST = os.getenv('POSTGRES_HOST', default='localhost')
+POSTGRES_USER = os.getenv('POSTGRES_USER', default='postgres')
+POSTGRES_PASSWORD = os.getenv('POSTGRES_PASSWORD', default='postgres')
+POSTGRES_DB = os.getenv('POSTGRES_DB', default='aiohttp')
 
 API_PREFIX = ''

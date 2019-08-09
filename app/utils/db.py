@@ -6,9 +6,9 @@ from app.utils import settings
 
 async def get_raw_connection() -> Connection:
     return await connect(
-        user=settings.DATABASE_USER,
-        password=settings.DATABASE_PASSWORD,
-        host=settings.DATABASE_HOST,
+        user=settings.POSTGRES_USER,
+        password=settings.POSTGRES_PASSWORD,
+        host=settings.POSTGRES_HOST,
     )
 
 
@@ -31,10 +31,10 @@ async def create_db_pool() -> Pool:
     :return: asyncpg pool connection
     """
     pool: Pool = await create_pool(
-        database=settings.DATABASE_NAME,
-        user=settings.DATABASE_USER,
-        password=settings.DATABASE_PASSWORD,
-        host=settings.DATABASE_HOST,
+        database=settings.POSTGRES_DB,
+        user=settings.POSTGRES_USER,
+        password=settings.POSTGRES_PASSWORD,
+        host=settings.POSTGRES_HOST,
     )
     settings.db_pool = pool
 
