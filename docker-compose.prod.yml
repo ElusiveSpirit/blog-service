@@ -38,15 +38,11 @@ services:
       - ./volumes/redis:/data/
     restart: always
 
-  reverse-proxy:
-    image: traefik
-    command: --api --docker
-    ports:
-      - "80:80"
-      - "8080:8080" # The Web UI (enabled by --api)
+  dbmate:
+    image: amacneil/dbmate
+    depends_on:
+      - postgres
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-  whoami:
-    image: containous/whoami # A container that exposes an API to show its IP address
-    labels:
-      - "traefik.frontend.rule=Host:whoami.docker.localhost"
+      - ./db:/db
+    env_file:
+      - .env

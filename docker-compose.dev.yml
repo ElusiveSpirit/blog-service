@@ -32,3 +32,12 @@ services:
     image: redis
     ports:
       - 6379:6379
+
+  dbmate:
+    image: amacneil/dbmate
+    depends_on:
+      - postgres
+    volumes:
+      - ./db:/db
+    env_file:
+      - .env
