@@ -13,6 +13,7 @@ python-dotenv = "*"
 attrs = "*"
 pyjwt = "*"
 ujson = "*"
+aioredis = "*"
 
 [dev-packages]
 ptvsd = "*"

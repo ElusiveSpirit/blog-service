@@ -96,13 +96,17 @@ def clear_database(collection):
 @cli.command()
 @click.option('--settings', 'settings_module', default='config.settings.test')
 @click.option('-v', '--verbose', is_flag=True, help=verbose_help)
+@click.option('-c', '--coverage', help='With coverage')
 @click.pass_context
 def test(ctx, settings_module, **config):
     os.environ.setdefault('AIOHTTP_SETTINGS_MODULE', settings_module)
     if settings.DATABASE_CLEAR:
         ctx.invoke(clear_database, collection=settings.POSTGRES_DB)
     setup()
-    call(['py.test'])
+    call_stack = ['py.test']
+    if config['coverage']:
+        call_stack.append(f'--cov={config["coverage"]}')
+    call(call_stack)
 
 
 @cli.command()

@@ -5,15 +5,16 @@ import os
 from aiohttp.web import Application
 from asyncpg.pool import Pool
 
-from app.middlewares.db_middleware import db_middleware
-from app.middlewares.exception_handler import exception_handler
+from app.middlewares import db_middleware
+from app.middlewares import exception_handler
+from app.middlewares import redis_middleware
 from app.utils import LazySettings
 from app.utils.db import create_db_pool
 
 logger = logging.getLogger(__name__)
 
 
-async def create_app():
+async def create_app() -> Application:
     """Fabric creating web app"""
     from app.utils import settings
 
@@ -66,5 +67,6 @@ async def initialize_middlewares(app: Application) -> None:
     app.middlewares.extend([
         exception_handler,
         db_middleware,
+        redis_middleware,
         jwt_middleware,
     ])

@@ -1,8 +1,12 @@
+import logging
+
 import asyncpg
 import pytest
 
 from app.app import create_app
 from app.utils.db import create_db_pool
+
+logging.disable(logging.CRITICAL)
 
 
 @pytest.fixture(scope='function')

@@ -10,5 +10,6 @@ async def test_health_page(cli):
     resp = await cli.get('/health/')
     assert resp.status == 200
     assert await resp.json() == {
-        'db': 'ok'
+        'db': 'ok',
+        'redis': 'ok',
     }
