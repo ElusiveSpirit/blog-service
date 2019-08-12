@@ -5,13 +5,16 @@ services:
     build:
       context: .
       dockerfile: ./config/prod/app/Dockerfile
+    image: aiohttp_prod_app
     depends_on:
       - postgres
+      - redis
     env_file:
       - .env
 
   backend:
     <<: *app
+    image: aiohttp_prod_backend
     restart: always
     ports:
       - 8080:8080
@@ -21,9 +24,29 @@ services:
     build:
       context: .
       dockerfile: ./config/prod/postgres/Dockerfile
+    image: aiohttp_prod_postgres
     volumes:
       - ./volumes/postgres:/var/lib/postgresql/data
       - ./volumes/backups:/backups
     env_file:
       - .env
     restart: always
+
+  redis:
+    image: redis
+    volumes:
+      - ./volumes/redis:/data/
+    restart: always
+
+  reverse-proxy:
+    image: traefik
+    command: --api --docker
+    ports:
+      - "80:80"
+      - "8080:8080" # The Web UI (enabled by --api)
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+  whoami:
+    image: containous/whoami # A container that exposes an API to show its IP address
+    labels:
+      - "traefik.frontend.rule=Host:whoami.docker.localhost"
