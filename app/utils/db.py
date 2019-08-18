@@ -1,3 +1,5 @@
+import os
+
 from asyncpg import Connection, connect
 from asyncpg.pool import Pool, create_pool
 
@@ -9,6 +11,7 @@ async def get_raw_connection() -> Connection:
         user=settings.POSTGRES_USER,
         password=settings.POSTGRES_PASSWORD,
         host=settings.POSTGRES_HOST,
+        port=settings.POSTGRES_PORT,
     )
 
 
@@ -24,6 +27,11 @@ async def drop_database(db_name: str, conn: Connection = None) -> None:
     await conn.execute(f'DROP DATABASE IF EXISTS {db_name}')
 
 
+async def apply_migrations(conn: Connection) -> None:
+    sql_file = open(os.path.join(settings.BASE_DIR, 'db/schema.sql'), 'r')
+    await conn.execute(sql_file.read())
+
+
 async def create_db_pool() -> Pool:
     """PgSQL creating connection pool
     Application settings. Sets db_pool attr after initializing
@@ -35,6 +43,7 @@ async def create_db_pool() -> Pool:
         user=settings.POSTGRES_USER,
         password=settings.POSTGRES_PASSWORD,
         host=settings.POSTGRES_HOST,
+        port=settings.POSTGRES_PORT,
     )
     settings.db_pool = pool
 
