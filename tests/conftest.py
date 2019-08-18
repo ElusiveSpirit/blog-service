@@ -1,34 +1,30 @@
-import logging
-
-import asyncpg
 import pytest
 
-from app.app import create_app
-from app.utils.db import create_db_pool
 
-logging.disable(logging.CRITICAL)
+@pytest.fixture(scope='session')
+def session_id():
+    from uuid import uuid4
 
-
-@pytest.fixture(scope='function')
-async def db_pool(loop):
-    return await create_db_pool()
+    return str(uuid4())
 
 
-@pytest.fixture(scope='function')
-async def transact(db_pool: asyncpg.pool.Pool):
-    async with db_pool.acquire() as connection:
-        # Open a transaction.
-        tr: asyncpg.connection.transaction.Transaction = connection.transaction()
-        await tr.start()
-        try:
-            yield connection
-        except Exception as e:
-            await tr.rollback()
-            raise e
+@pytest.fixture(scope='session')
+def unused_port():
+    import socket
+
+    def factory():
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.bind(('127.0.0.1', 0))
+            return s.getsockname()[1]
+
+    return factory
 
 
-@pytest.fixture()
-def cli(loop, aiohttp_client, transact):
-    app = loop.run_until_complete(create_app())
-    app.conn = transact
-    return loop.run_until_complete(aiohttp_client(app))
+@pytest.fixture(scope='session')
+def docker():
+    import docker
+
+    cli = docker.from_env()
+    yield cli
+
+    cli.close()
