@@ -4,8 +4,7 @@ Details see manual: http://docs.pyinvoke.org/en/1.0/getting-started.html
 """
 from invoke import task
 
-
-SRC_DIR = 'app/'
+SRC_DIR = './'
 
 
 @task
@@ -30,7 +29,7 @@ def serve(ctx, pip=False):
 @task
 def yapf(ctx):
     """Run yapf."""
-    ctx.run(f'yapf -i --recursive  {SRC_DIR}')
+    ctx.run(f'yapf -i --recursive {SRC_DIR}')
 
 
 @task

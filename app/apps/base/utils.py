@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 async def get_redis_health_status(request: Request) -> str:
     try:
-        redis: Redis = request.redis
+        _: Redis = request.redis
         return 'ok'
     except (RedisError, AttributeError):
         return 'no connection'

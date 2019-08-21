@@ -9,14 +9,15 @@ from subprocess import call
 
 import click
 import uvloop
-from aiohttp_devtools.cli import host_help, debugtoolbar_help, app_factory_help, port_help, aux_port_help, verbose_help
+from aiohttp_devtools.cli import app_factory_help, aux_port_help, debugtoolbar_help, host_help, port_help, verbose_help
 from aiohttp_devtools.exceptions import AiohttpDevException
-from aiohttp_devtools.logs import setup_logging, main_logger
-from aiohttp_devtools.runserver import runserver as _runserver, run_app, INFER_HOST
+from aiohttp_devtools.logs import main_logger, setup_logging
+from aiohttp_devtools.runserver import INFER_HOST, run_app
+from aiohttp_devtools.runserver import runserver as _runserver
 from asyncpg import InvalidCatalogNameError
 
 from app.utils import settings
-from app.utils.db import drop_database, create_database
+from app.utils.db import create_database, drop_database
 
 logger = logging.getLogger(__name__)
 
@@ -43,10 +44,12 @@ def setup():
 
 
 def setup_app_env(func):
+
     @wraps(func)
     def wrapper(*args, **kwargs):
         setup()
         return func(*args, **kwargs)
+
     return wrapper
 
 
@@ -122,9 +125,7 @@ def shell(ipython):
     def run_python():
         import code
 
-        imported_objects = {
-            'settings': settings
-        }
+        imported_objects = {'settings': settings}
 
         code.interact(local=imported_objects)
 

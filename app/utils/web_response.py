@@ -1,5 +1,4 @@
 import ujson
-
 from aiohttp.web_response import json_response as aiohttp_json_response
 
 

@@ -48,7 +48,7 @@ class Promise:
     pass
 
 
-def lazy(func, *resultclasses):
+def lazy(func, *resultclasses):  # noqa: C901
     """
     Turn any callable into a lazy evaluated callable. result classes or types
     is required -- at least one is needed so that the automatic forcing of
@@ -91,7 +91,7 @@ def lazy(func, *resultclasses):
                         setattr(cls, method_name, meth)
             cls._delegate_bytes = bytes in resultclasses
             cls._delegate_text = str in resultclasses
-            assert not (cls._delegate_bytes and
+            assert not (cls._delegate_bytes and  # noqa: W504
                         cls._delegate_text), ("Cannot call lazy() with both bytes and text return types.")
             if cls._delegate_text:
                 cls.__str__ = cls.__text_cast

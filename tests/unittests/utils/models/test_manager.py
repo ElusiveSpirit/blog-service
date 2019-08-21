@@ -15,6 +15,7 @@ async def test_manager(loop: uvloop, transact_conn: Connection):
     """)
 
     class TestManager(ModelManager):
+
         class Meta:
             db_table = 'test_table'
 

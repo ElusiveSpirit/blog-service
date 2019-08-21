@@ -1,6 +1,4 @@
 """wsgi.py entry point"""
-import asyncio
-
 import uvloop
 from aiohttp.web import run_app
 

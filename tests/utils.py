@@ -1,10 +1,10 @@
 import asyncio
 
 import asyncpg
-from docker.models.containers import ContainerCollection, Container
+from docker.models.containers import Container, ContainerCollection
 
 from app.utils import settings
-from app.utils.db import create_db_pool, apply_migrations
+from app.utils.db import apply_migrations, create_db_pool
 
 
 async def migrate() -> bool:
@@ -33,9 +33,7 @@ def migrate_pg() -> None:
         raise RuntimeError('Cannot connect to postgres server.')
 
 
-def get_postgres_docker_container(containers: ContainerCollection,
-                                  session_id: str,
-                                  unused_port: int) -> Container:
+def get_postgres_docker_container(containers: ContainerCollection, session_id: str, unused_port: int) -> Container:
     settings.POSTGRES_PORT = unused_port
     container = containers.run(
         'postgres:11-alpine',
@@ -45,25 +43,13 @@ def get_postgres_docker_container(containers: ContainerCollection,
             'POSTGRES_PASSWORD': settings.POSTGRES_PASSWORD,
             'POSTGRES_DB': settings.POSTGRES_DB,
         },
-        ports={
-            '5432': settings.POSTGRES_PORT
-        },
-        detach=True
-    )
+        ports={'5432': settings.POSTGRES_PORT},
+        detach=True)
     migrate_pg()
     return container
 
 
-def get_redis_docker_container(containers: ContainerCollection,
-                               session_id: str,
-                               unused_port: int) -> Container:
+def get_redis_docker_container(containers: ContainerCollection, session_id: str, unused_port: int) -> Container:
     settings.REDIS_ADDRESS = f'redis://localhost:{unused_port}'
-    container = containers.run(
-        'redis',
-        name=f'redis-aiohttp-{session_id}',
-        ports={
-            '6379': unused_port
-        },
-        detach=True
-    )
+    container = containers.run('redis', name=f'redis-aiohttp-{session_id}', ports={'6379': unused_port}, detach=True)
     return container

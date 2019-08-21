@@ -1,5 +1,3 @@
-
-
 async def test_index_page(cli):
     resp = await cli.get('/')
     assert resp.status == 200

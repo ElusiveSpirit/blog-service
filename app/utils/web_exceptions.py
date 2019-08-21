@@ -62,10 +62,10 @@ __all__ = (
     'HTTPNetworkAuthenticationRequired',
 )
 
-
 ############################################################
 # HTTP Exceptions
 ############################################################
+
 
 class HTTPException(Response, Exception):
 
@@ -77,11 +77,15 @@ class HTTPException(Response, Exception):
 
     __http_exception__ = True
 
-    def __init__(self, msg=None, *, headers=None, reason=None,
-                 body=None, text=None, content_type='application/json'):
-        Response.__init__(self, status=self.status_code,
-                          headers=headers, reason=reason,
-                          body=body, text=text, content_type=content_type)
+    def __init__(self, msg=None, *, headers=None, reason=None, body=None, text=None, content_type='application/json'):
+        Response.__init__(
+            self,
+            status=self.status_code,
+            headers=headers,
+            reason=reason,
+            body=body,
+            text=text,
+            content_type=content_type)
         Exception.__init__(self, self.reason)
         if msg:
             self.text = json.dumps({'message': msg})
@@ -141,12 +145,10 @@ class HTTPPartialContent(HTTPSuccessful):
 
 class _HTTPMove(HTTPRedirection):
 
-    def __init__(self, location, *, headers=None, reason=None,
-                 body=None, text=None, content_type=None):
+    def __init__(self, location, *, headers=None, reason=None, body=None, text=None, content_type=None):
         if not location:
             raise ValueError("HTTP redirects need a location to redirect to.")
-        super().__init__(headers=headers, reason=reason,
-                         body=body, text=text, content_type=content_type)
+        super().__init__(headers=headers, reason=reason, body=body, text=text, content_type=content_type)
         self.headers['Location'] = str(location)
         self.location = location
 
@@ -220,11 +222,9 @@ class HTTPNotFound(HTTPClientError):
 class HTTPMethodNotAllowed(HTTPClientError):
     status_code = 405
 
-    def __init__(self, method, allowed_methods, *, headers=None, reason=None,
-                 body=None, text=None, content_type=None):
+    def __init__(self, method, allowed_methods, *, headers=None, reason=None, body=None, text=None, content_type=None):
         allow = ','.join(sorted(allowed_methods))
-        super().__init__(headers=headers, reason=reason,
-                         body=body, text=text, content_type=content_type)
+        super().__init__(headers=headers, reason=reason, body=body, text=text, content_type=content_type)
         self.headers['Allow'] = allow
         self.allowed_methods = allowed_methods
         self.method = method.upper()
@@ -262,11 +262,8 @@ class HTTPRequestEntityTooLarge(HTTPClientError):
     status_code = 413
 
     def __init__(self, max_size, actual_size, **kwargs):
-        kwargs.setdefault(
-            'text',
-            'Maximum request body size {} exceeded, '
-            'actual body size {}'.format(max_size, actual_size)
-        )
+        kwargs.setdefault('text', 'Maximum request body size {} exceeded, '
+                          'actual body size {}'.format(max_size, actual_size))
         super().__init__(**kwargs)
 
 
@@ -317,10 +314,8 @@ class HTTPRequestHeaderFieldsTooLarge(HTTPClientError):
 class HTTPUnavailableForLegalReasons(HTTPClientError):
     status_code = 451
 
-    def __init__(self, link, *, headers=None, reason=None,
-                 body=None, text=None, content_type=None):
-        super().__init__(headers=headers, reason=reason,
-                         body=body, text=text, content_type=content_type)
+    def __init__(self, link, *, headers=None, reason=None, body=None, text=None, content_type=None):
+        super().__init__(headers=headers, reason=reason, body=body, text=text, content_type=content_type)
         self.headers['Link'] = '<%s>; rel="blocked-by"' % link
         self.link = link
 

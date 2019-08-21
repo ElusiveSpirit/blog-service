@@ -7,7 +7,9 @@ def _check_for_user(request):
 
 
 def login_required(func):
+
     async def wrapper(request):
         _check_for_user(request)
         return await func(request)
+
     return wrapper

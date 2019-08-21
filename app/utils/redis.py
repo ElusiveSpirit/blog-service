@@ -1,4 +1,4 @@
-from aioredis import create_redis, Redis
+from aioredis import Redis, create_redis
 
 from app.utils import settings
 

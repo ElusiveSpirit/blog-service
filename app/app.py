@@ -5,9 +5,7 @@ import os
 from aiohttp.web import Application
 from asyncpg.pool import Pool
 
-from app.middlewares import db_middleware
-from app.middlewares import exception_handler
-from app.middlewares import redis_middleware
+from app.middlewares import db_middleware, exception_handler, redis_middleware
 from app.utils import LazySettings
 from app.utils.db import create_db_pool
 
@@ -46,7 +44,7 @@ async def initialize_db(app: Application) -> None:
 
 async def close_db(app: Application) -> None:
     db_pool: Pool = app['db_pool']
-    # await db_pool.close()
+    await db_pool.close()
 
 
 async def initialize_routes(app: Application) -> None:

@@ -1,8 +1,6 @@
-from typing import Optional, List, Any, Union
+from typing import Any, List, Optional, Union
 
 from asyncpg import Connection, Record
-
-from app.utils.exceptions import ManagerTableDoesNotSpecified
 
 __all__ = ['ModelManager']
 
@@ -18,6 +16,7 @@ class ModelMetaClass(type):
 
 
 class ModelManager(metaclass=ModelMetaClass):
+
     def __init__(self, conn: Connection):
         self.__conn = conn
 

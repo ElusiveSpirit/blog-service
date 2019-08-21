@@ -8,6 +8,7 @@ import time
 
 from app.utils import global_settings
 from app.utils.exceptions import ImproperlyConfigured
+
 from .functional import LazyObject, empty
 
 ENVIRONMENT_VARIABLE = "AIOHTTP_SETTINGS_MODULE"
@@ -29,10 +30,10 @@ class LazySettings(LazyObject):
         settings_module = os.environ.get(ENVIRONMENT_VARIABLE)
         if not settings_module:
             desc = ("setting %s" % name) if name else "settings"
-            raise ImproperlyConfigured(
-                "Requested %s, but settings are not configured. "
-                "You must either define the environment variable %s "
-                "or call settings.configure() before accessing settings." % (desc, ENVIRONMENT_VARIABLE))
+            raise ImproperlyConfigured("Requested %s, but settings are not configured. "
+                                       "You must either define the environment variable %s "
+                                       "or call settings.configure() before accessing settings." %
+                                       (desc, ENVIRONMENT_VARIABLE))
 
         self._wrapped = Settings(settings_module)
 
@@ -122,7 +123,7 @@ class Settings:
             # When we can, attempt to validate the timezone. If we can't find
             # this file, no check happens and it's harmless.
             zoneinfo_root = '/usr/share/zoneinfo'
-            if (os.path.exists(zoneinfo_root) and
+            if (os.path.exists(zoneinfo_root) and  # noqa: W504
                     not os.path.exists(os.path.join(zoneinfo_root, *(self.TIME_ZONE.split('/'))))):
                 raise ValueError("Incorrect timezone setting: %s" % self.TIME_ZONE)
             # Move the time zone info into os.environ. See ticket #2315 for why

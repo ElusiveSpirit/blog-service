@@ -11,8 +11,7 @@ async def jwt_middleware(request, handler):
     jwt_token = request.headers.get('authorization', None)
     if jwt_token:
         try:
-            payload = jwt.decode(jwt_token, settings.JWT_SECRET,
-                                 algorithms=[settings.JWT_ALGORITHM])
+            _ = jwt.decode(jwt_token, settings.JWT_SECRET, algorithms=[settings.JWT_ALGORITHM])
         except (jwt.DecodeError, jwt.ExpiredSignatureError):
             raise HTTPBadRequest('Token is invalid')
 
